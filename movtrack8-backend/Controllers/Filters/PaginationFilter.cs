@@ -16,7 +16,7 @@ namespace movtrack8_backend.Controllers.Filters
         public int PageNumber { get; set; }
         
         /// <summary>
-        /// Nombre max d'élément par page
+        /// Nombre max d'élément par page (maximum autorisé: 500)
         /// </summary>
         [Range(0, MAX_PAGE_SIZE)]
         public int PageSize { get; set; }

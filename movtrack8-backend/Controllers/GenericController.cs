@@ -1,14 +1,23 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using movtrack8_backend.Controllers.Filters;
+using movtrack8_backend.DTO;
 using movtrack8_backend.Models;
 
 namespace movtrack8_backend.Controllers
 {
-
-    public abstract class GenericController<T> : ControllerBase
-        where T : EntityBase
+    /// <summary>
+    /// Classe de base pour les ApiController
+    /// Ajoute le support des requêtes de base de HTTP (GET, POST, PUT, DELETE)
+    /// Implémente pour chaque endpoint des fonctionnalités de trie et de pagination
+    /// </summary>
+    /// <typeparam name="TDb">Objet EF Core</typeparam>
+    /// <typeparam name="TDTO">Objet DTO</typeparam>
+    public abstract class GenericController<TDb, TDTO> : ControllerBase
+        where TDb : EntityBase
+        where TDTO : BaseDTO
     {
         protected readonly DatabaseContext _db;
         protected readonly ILogger _logger;
@@ -27,16 +36,89 @@ namespace movtrack8_backend.Controllers
         /// <returns><see cref="TOeuvre" /></returns>
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll(
             [FromQuery] PaginationFilter pageFilter,
             [FromQuery] OrderingFilter orderingFilter)
         {
-            var pagedData = await _db.Set<T>()
+            var dbQuery = await _db.Set<TDb>()
                 .ApplyOrdering(orderingFilter)
                 .ApplyFiltering(pageFilter)
+                .ProjectTo<TDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-            var totalRecords = await _db.Set<T>().CountAsync();
-            return Ok(new PagedResponse<List<T>>(pagedData, pageFilter.PageNumber, pageFilter.PageSize, totalRecords));
+
+            var totalRecords = await _db.Set<TDb>().CountAsync();
+
+            return Ok(new PagedResponse<List<TDTO>>(dbQuery, pageFilter.PageNumber, pageFilter.PageSize, totalRecords));
+        }
+
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<TDTO>> GetId(long Id)
+        {
+            var ret = await _db.Set<TDb>().FindAsync(Id);
+
+            if (ret == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<TDTO>(ret);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Post([FromBody] TDTO dt)
+        {
+            var toAdd = _mapper.Map<TDb>(dt);
+
+            var added = _db.Set<TDb>().Add(toAdd);
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetId), new { dt.Id }, added.Members.First());
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Put(long Id, [FromBody] TDTO dto)
+        {
+            if (Id != dto.Id)
+            {
+                return BadRequest("L'id passé en paramètre ne correspond pas à celui contenu dans l'objet");
+            }
+
+            TDb? todoItem = await _db.Set<TDb>().FindAsync(Id);
+            if (todoItem == null)
+            {
+                return NotFound("Ressource not found, check Id");
+            }
+
+            _mapper.Map(dto, todoItem);
+
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(long Id)
+        {
+            var toDelete = await _db.Set<TDb>().FindAsync(Id);
+            if (toDelete == null)
+            {
+                return NotFound();
+            }
+
+            _db.Set<TDb>().Remove(toDelete);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
