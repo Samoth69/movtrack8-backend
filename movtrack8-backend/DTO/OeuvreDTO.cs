@@ -8,10 +8,10 @@ namespace movtrack8_backend.DTO
     {
         public string Name { get; set; }
         
-        public string OeuvreRegex { get; set; }
+        public string? OeuvreRegex { get; set; }
         
         public bool IsDisabled { get; set; }
-        
+
         public override IActionResult? CheckObject()
         {
             if (OeuvreRegex is not null)

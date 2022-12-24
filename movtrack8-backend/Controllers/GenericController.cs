@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using movtrack8_backend.Controllers.Filters;
 using movtrack8_backend.DTO;
 using movtrack8_backend.Models;
+using System.ComponentModel;
 
 namespace movtrack8_backend.Controllers
 {
@@ -41,13 +42,21 @@ namespace movtrack8_backend.Controllers
             [FromQuery] PaginationFilter pageFilter,
             [FromQuery] OrderingFilter orderingFilter)
         {
-            var dbQuery = await _db.Set<TDb>()
+            return await ApplyFilteringAndOrdering(_db.Set<TDb>(), pageFilter, orderingFilter);
+        }
+
+        protected async Task<IActionResult> ApplyFilteringAndOrdering(
+            DbSet<TDb> query, 
+            PaginationFilter pageFilter, 
+            OrderingFilter orderingFilter)
+        {
+            var dbQuery = await query
                 .ApplyOrdering(orderingFilter)
                 .ApplyFiltering(pageFilter)
                 .ProjectTo<TDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            var totalRecords = await _db.Set<TDb>().CountAsync();
+            var totalRecords = await query.CountAsync();
 
             return Ok(new PagedResponse<List<TDTO>>(dbQuery, pageFilter.PageNumber, pageFilter.PageSize, totalRecords));
         }

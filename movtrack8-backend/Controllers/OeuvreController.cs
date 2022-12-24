@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using movtrack8_backend.Controllers.Filters;
 using movtrack8_backend.DTO;
 using movtrack8_backend.Models;
 using System.ComponentModel;
@@ -11,14 +12,9 @@ namespace movtrack8_backend.Controllers
     [Route("backend/[controller]")]
     public class OeuvreController : GenericController<TOeuvre, OeuvreDTO>
     {
-        private readonly ILogger<OeuvreController> _logger;
-        private readonly DatabaseContext _databaseContext;
-
         public OeuvreController(ILogger<OeuvreController> logger, DatabaseContext databaseContext, IMapper mapper) :
             base(logger, databaseContext, mapper)
         {
-            _logger = logger;
-            _databaseContext = databaseContext;
         }
     }
 }

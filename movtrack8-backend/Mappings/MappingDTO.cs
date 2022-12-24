@@ -11,19 +11,21 @@ namespace movtrack8_backend.Mappings
             CreateMap<EntityBase, BaseDTO>()
                 .Include<TOeuvre, OeuvreDTO>();
 
-            CreateMap<TOeuvre, OeuvreDTO>();
+            CreateMap<TOeuvre, OeuvreDTO>()
+                .ForSourceMember(src => src.Episodes, opt => opt.DoNotValidate());
 
             //
             // Reverse mapping
             //
-            
+
             CreateMap<BaseDTO, EntityBase>()
                 .Include<OeuvreDTO, TOeuvre>()
                 .ForMember(src => src.Id, opt => opt.Ignore())
                 .ForMember(src => src.UpdatedAt, opt => opt.Ignore())
                 .ForMember(src => src.CreatedAt, opt => opt.Ignore());
 
-            CreateMap<OeuvreDTO, TOeuvre>();
+            CreateMap<OeuvreDTO, TOeuvre>()
+                .ForMember(src => src.Episodes, opt => opt.Ignore());
         }
     }
 }

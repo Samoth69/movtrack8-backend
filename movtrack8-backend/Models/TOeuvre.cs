@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
@@ -25,6 +26,11 @@ namespace movtrack8_backend.Models
         /// Permet de désactiver la recherche de torrent pour cette entité
         /// </summary>
         [DefaultValue(false)]
-        public bool IsDisabled { get; set; } = false;
+        public bool IsDisabled { get; set; }
+
+        /// <summary>
+        /// Episodes liées à cette Oeuvre
+        /// </summary>
+        public List<TEpisode>? Episodes { get; set; }
     }
 }
