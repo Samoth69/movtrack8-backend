@@ -6,6 +6,7 @@ using movtrack8_backend.Controllers.Filters;
 using movtrack8_backend.DTO;
 using movtrack8_backend.Models;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace movtrack8_backend.Controllers
 {
@@ -32,8 +33,6 @@ namespace movtrack8_backend.Controllers
         }
 
         [HttpGet()]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll(
             [FromQuery] PaginationFilter pageFilter,
             [FromQuery] OrderingFilter orderingFilter)
@@ -57,36 +56,30 @@ namespace movtrack8_backend.Controllers
             return Ok(new PagedResponse<List<TDTO>>(dbQuery, pageFilter.PageNumber, pageFilter.PageSize, totalRecords));
         }
 
-        [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<TDTO>> GetId(long Id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TDTO>> GetId(long id)
         {
-            var ret = await _db.Set<TDb>().FindAsync(Id);
+            var ret = await _db.Set<TDb>().FindAsync(id);
 
             if (ret == null)
             {
                 return NotFound();
             }
 
-            return _mapper.Map<TDTO>(ret);
+            return Ok(_mapper.Map<TDTO>(ret));
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TDTO>> Post([FromBody] TDTO dt)
         {
-            _db.Set<TDb>().Add(_mapper.Map<TDb>(dt));
+            var added = await _db.Set<TDb>().AddAsync(_mapper.Map<TDb>(dt));
             await _db.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetId), new { id = dt.Id }, dt);
+            
+            var DTO = _mapper.Map<TDTO>(added.Entity);
+            return CreatedAtAction(nameof(GetId), new { DTO.Id }, DTO);
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Put(long Id, [FromBody] TDTO dto)
         {
             if (Id != dto.Id)
@@ -108,8 +101,6 @@ namespace movtrack8_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(long Id)
         {
             var toDelete = await _db.Set<TDb>().FindAsync(Id);
@@ -125,7 +116,7 @@ namespace movtrack8_backend.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<TDTO>> Patch(long Id, [FromBody] TDTO dto)
+        public async Task<IActionResult> Patch(long Id, [FromBody] TDTO dto)
         {
             TDb? todoItem = await _db.Set<TDb>().FindAsync(Id);
 
