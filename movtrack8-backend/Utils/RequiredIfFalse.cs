@@ -3,7 +3,7 @@
 namespace movtrack8_backend.Utils
 {
     /// <summary>
-    /// TODO
+    /// Permet de désactiver la validation d'un attribut si une autre propriété est à false
     /// </summary>
     sealed public class RequiredIfFalse : ValidationAttribute
     {

@@ -36,9 +36,14 @@ namespace movtrack8_backend.DTO
         /// </summary>
 #pragma warning disable IDE1006 // Naming Styles
         [JsonIgnore]
-        public bool _IsHttpPatch { get; set; } = false;
+        public bool _IsHttpPatch { get; private set; } = false;
 #pragma warning restore IDE1006 // Naming Styles
 
         public abstract IActionResult? CheckObject();
+
+        public void MarkAsHttpPatchRequest()
+        {
+            _IsHttpPatch = true;
+        }
     }
 }

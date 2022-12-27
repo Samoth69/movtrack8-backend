@@ -30,7 +30,7 @@ namespace movtrack8_backend.Controllers
                 {
                     if (context.HttpContext.Request.Method == "PATCH")
                     {
-                        dto._IsHttpPatch = true;
+                        dto.MarkAsHttpPatchRequest();
                     }
                 }
             });

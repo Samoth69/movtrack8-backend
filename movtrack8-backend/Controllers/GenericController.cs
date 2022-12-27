@@ -31,10 +31,6 @@ namespace movtrack8_backend.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Get all entities
-        /// </summary>
-        /// <returns><see cref="TOeuvre" /></returns>
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
