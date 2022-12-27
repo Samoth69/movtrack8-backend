@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using movtrack8_backend.Interfaces;
+using movtrack8_backend.Utils;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
@@ -9,34 +10,13 @@ using System.Runtime.CompilerServices;
 namespace movtrack8_backend.Models
 {
     /// <summary>
-    /// Base class for all tables in database
-    /// </summary>
-    [Index(nameof(CreatedAt))]
-    [Index(nameof(UpdatedAt))]
-    public abstract class EntityBase : IObjectBase
-    {
-        /// <summary>
-        /// Clé primaire
-        /// </summary>
-        public long Id { get; set; }
-
-        /// <summary>
-        /// When this object was created
-        /// </summary>
-        public DateTime CreatedAt { get; set; }
-
-        /// <summary>
-        /// When this object was last updated
-        /// </summary>
-        public DateTime UpdatedAt { get; set; }
-    }
-
-    /// <summary>
     /// Database context
     /// </summary>
     public class DatabaseContext : DbContext
     {
         public DbSet<TOeuvre> Oeuvres { get; set; }
+        public DbSet<TEpisode> Episodes { get; set; }
+        public DbSet<TWebsite> Websites { get; set; }
 
         public DatabaseContext() : base()
         {
@@ -73,6 +53,12 @@ namespace movtrack8_backend.Models
                 // trim toutes les propriétés de type string(ou string?) dans les objets avant la sauvegarde en bdd
                 changedEntity.Entity.GetType().GetProperties().ForEach(x =>
                 {
+                    // saute les entrées qui contiennent le terme regex, on ne veut pas modifier un regex
+                    if (x.Name.Contains("regex", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        //return;
+                    }
+
                     var val = x.GetGetMethod()?.Invoke(changedEntity.Entity, null);
                     if (val is not null && val is string str)
                     {

@@ -31,6 +31,6 @@ namespace movtrack8_backend.Models
         /// <summary>
         /// Episodes liées à cette Oeuvre
         /// </summary>
-        public List<TEpisode>? Episodes { get; set; }
+        public List<TEpisode> Episodes { get; set; }
     }
 }

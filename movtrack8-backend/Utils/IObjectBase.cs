@@ -6,8 +6,8 @@
     /// </summary>
     public interface IObjectBase
     {
-        long Id { get; set; }
-        DateTime CreatedAt { get; set; }
-        DateTime UpdatedAt { get; set; }
+        long? Id { get; set; }
+        DateTime? CreatedAt { get; set; }
+        DateTime? UpdatedAt { get; set; }
     }
 }

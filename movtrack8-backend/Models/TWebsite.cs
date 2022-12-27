@@ -42,5 +42,7 @@ namespace movtrack8_backend.Models
         /// Dernier fetch rss sans erreurs
         /// </summary>
         public DateTime LastSuccessfulFetch { get; set; } = DateTime.Now;
+
+        public List<TEpisode> Episodes { get; set; }
     }
 }

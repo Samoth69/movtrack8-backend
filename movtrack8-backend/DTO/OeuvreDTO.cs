@@ -6,11 +6,14 @@ namespace movtrack8_backend.DTO
 {
     public class OeuvreDTO : BaseDTO
     {
-        public string Name { get; set; }
-        
+        [Required]
+        public string? Name { get; set; }
+
+        [Required]
         public string? OeuvreRegex { get; set; }
-        
-        public bool IsDisabled { get; set; }
+
+        [Required]
+        public bool? IsDisabled { get; set; }
 
         public override IActionResult? CheckObject()
         {

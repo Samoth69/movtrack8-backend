@@ -3,6 +3,7 @@ using movtrack8_backend.Interfaces;
 using movtrack8_backend.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace movtrack8_backend.DTO
 {
@@ -25,9 +26,18 @@ namespace movtrack8_backend.DTO
     /// </summary>
     public abstract class BaseDTO : IObjectBase, ICheck
     {
-        public long Id { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public long? Id { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Sera vrai si la requête actuelle est un http patch.
+        /// permet de faire sauter la validation sur les champs qui ne sont pas fournis
+        /// </summary>
+#pragma warning disable IDE1006 // Naming Styles
+        [JsonIgnore]
+        public bool _IsHttpPatch { get; set; } = false;
+#pragma warning restore IDE1006 // Naming Styles
 
         public abstract IActionResult? CheckObject();
     }

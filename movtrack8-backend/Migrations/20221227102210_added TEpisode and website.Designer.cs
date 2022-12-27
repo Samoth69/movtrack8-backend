@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using movtrack8_backend.Models;
@@ -11,9 +12,11 @@ using movtrack8_backend.Models;
 namespace movtrack8backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20221227102210_added TEpisode and website")]
+    partial class addedTEpisodeandwebsite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,7 +86,7 @@ namespace movtrack8backend.Migrations
 
                     b.HasIndex("WebsiteId");
 
-                    b.ToTable("Episodes");
+                    b.ToTable("TEpisode");
                 });
 
             modelBuilder.Entity("movtrack8_backend.Models.TOeuvre", b =>
@@ -164,7 +167,7 @@ namespace movtrack8backend.Migrations
 
                     b.HasIndex("UpdatedAt");
 
-                    b.ToTable("Websites");
+                    b.ToTable("TWebsite");
                 });
 
             modelBuilder.Entity("movtrack8_backend.Models.TEpisode", b =>

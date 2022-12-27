@@ -46,8 +46,8 @@ namespace movtrack8_backend.Controllers
         }
 
         protected async Task<IActionResult> ApplyFilteringAndOrdering(
-            DbSet<TDb> query, 
-            PaginationFilter pageFilter, 
+            DbSet<TDb> query,
+            PaginationFilter pageFilter,
             OrderingFilter orderingFilter)
         {
             var dbQuery = await query
@@ -73,7 +73,7 @@ namespace movtrack8_backend.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<TDTO>(ret);
+            return Ok(_mapper.Map<TDTO>(ret));
         }
 
         [HttpPost]
@@ -81,12 +81,19 @@ namespace movtrack8_backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] TDTO dt)
         {
-            var toAdd = _mapper.Map<TDb>(dt);
+            if (ModelState.IsValid)
+            {
+                var toAdd = _mapper.Map<TDb>(dt);
 
-            var added = _db.Set<TDb>().Add(toAdd);
-            await _db.SaveChangesAsync();
+                var added = _db.Set<TDb>().Add(toAdd);
+                await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetId), new { dt.Id }, added.Members.First());
+                return CreatedAtAction(nameof(GetId), new { id = dt.Id }, toAdd);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpPut("{id}")]
@@ -128,6 +135,17 @@ namespace movtrack8_backend.Controllers
             await _db.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<TDTO>> Patch(long Id, [FromBody] TDTO dto)
+        {
+            TDb? todoItem = await _db.Set<TDb>().FindAsync(Id);
+
+            _mapper.Map(dto, todoItem);
+            await _db.SaveChangesAsync();
+
+            return Ok(_mapper.Map<TDTO>(todoItem));
         }
     }
 }

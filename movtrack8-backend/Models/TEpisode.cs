@@ -12,7 +12,7 @@ namespace movtrack8_backend.Models
         public TWebsite Website { get; set; }
         public long WebsiteId { get; set; }
 
-        public int JackettId { get; set; }
+        public long JackettId { get; set; }
 
         public DateTime PubDate { get; set; }
         public string Title { get; set; }
