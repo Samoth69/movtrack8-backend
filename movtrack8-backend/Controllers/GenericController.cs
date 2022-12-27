@@ -69,27 +69,18 @@ namespace movtrack8_backend.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<TDTO>(ret));
+            return _mapper.Map<TDTO>(ret);
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post([FromBody] TDTO dt)
+        public async Task<ActionResult<TDTO>> Post([FromBody] TDTO dt)
         {
-            if (ModelState.IsValid)
-            {
-                var toAdd = _mapper.Map<TDb>(dt);
+            _db.Set<TDb>().Add(_mapper.Map<TDb>(dt));
+            await _db.SaveChangesAsync();
 
-                var added = _db.Set<TDb>().Add(toAdd);
-                await _db.SaveChangesAsync();
-
-                return CreatedAtAction(nameof(GetId), new { id = dt.Id }, toAdd);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return CreatedAtAction(nameof(GetId), new { id = dt.Id }, dt);
         }
 
         [HttpPut("{id}")]

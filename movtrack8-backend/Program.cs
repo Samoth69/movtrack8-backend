@@ -1,7 +1,10 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using movtrack8_backend.Controllers;
 using movtrack8_backend.Models;
+using movtrack8_backend.Utils;
+using Npgsql;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -21,6 +24,7 @@ namespace movtrack8_backend
             }).AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                opt.JsonSerializerOptions.Converters.Add(new NodaTimeJsonConverter());
                 opt.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

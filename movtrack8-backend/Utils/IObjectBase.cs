@@ -1,4 +1,6 @@
-﻿namespace movtrack8_backend.Interfaces
+﻿using NodaTime;
+
+namespace movtrack8_backend.Interfaces
 {
     /// <summary>
     /// Additionnal informations added to each entries in the database
@@ -7,7 +9,7 @@
     public interface IObjectBase
     {
         long? Id { get; set; }
-        DateTime? CreatedAt { get; set; }
-        DateTime? UpdatedAt { get; set; }
+        Instant? CreatedAt { get; set; }
+        Instant? UpdatedAt { get; set; }
     }
 }

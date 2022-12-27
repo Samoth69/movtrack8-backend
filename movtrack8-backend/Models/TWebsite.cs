@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using NodaTime;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace movtrack8_backend.Models
@@ -41,7 +42,7 @@ namespace movtrack8_backend.Models
         /// <summary>
         /// Dernier fetch rss sans erreurs
         /// </summary>
-        public DateTime LastSuccessfulFetch { get; set; } = DateTime.Now;
+        public Instant LastSuccessfulFetch { get; set; } = SystemClock.Instance.GetCurrentInstant();
 
         public List<TEpisode> Episodes { get; set; }
     }

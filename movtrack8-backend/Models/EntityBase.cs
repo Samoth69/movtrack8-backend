@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using movtrack8_backend.Interfaces;
+using NodaTime;
 
 namespace movtrack8_backend.Models
 {
@@ -18,11 +19,11 @@ namespace movtrack8_backend.Models
         /// <summary>
         /// When this object was created
         /// </summary>
-        public DateTime? CreatedAt { get; set; }
+        public Instant? CreatedAt { get; set; }
 
         /// <summary>
         /// When this object was last updated
         /// </summary>
-        public DateTime? UpdatedAt { get; set; }
+        public Instant? UpdatedAt { get; set; }
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using movtrack8_backend.Interfaces;
 using movtrack8_backend.Utils;
+using NodaTime;
+using Npgsql;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
@@ -18,8 +20,11 @@ namespace movtrack8_backend.Models
         public DbSet<TEpisode> Episodes { get; set; }
         public DbSet<TWebsite> Websites { get; set; }
 
-        public DatabaseContext() : base()
+        private readonly IConfiguration _config;
+
+        public DatabaseContext(IConfiguration config) : base()
         {
+            _config = config;
             SavingChanges += EventSavingChanges;
         }
 
@@ -30,7 +35,7 @@ namespace movtrack8_backend.Models
         /// <param name="e"></param>
         private void EventSavingChanges(object? sender, SavingChangesEventArgs e)
         {
-            var now = DateTime.UtcNow;
+            Instant now = SystemClock.Instance.GetCurrentInstant();
 
             foreach (var changedEntity in ChangeTracker.Entries())
             {
@@ -71,7 +76,10 @@ namespace movtrack8_backend.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=movtrack7;Username=postgres;Password=postgres");
+            optionsBuilder.UseNpgsql(_config.GetConnectionString("movtrack7"), o =>
+            {
+                o.UseNodaTime();
+            });
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

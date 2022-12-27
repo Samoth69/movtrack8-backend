@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using movtrack8_backend.Interfaces;
 using movtrack8_backend.Models;
+using NodaTime;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
@@ -27,8 +28,8 @@ namespace movtrack8_backend.DTO
     public abstract class BaseDTO : IObjectBase, ICheck
     {
         public long? Id { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public Instant? CreatedAt { get; set; }
+        public Instant? UpdatedAt { get; set; }
 
         /// <summary>
         /// Sera vrai si la requête actuelle est un http patch.

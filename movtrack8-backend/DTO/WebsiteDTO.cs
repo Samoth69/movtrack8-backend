@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using movtrack8_backend.Utils;
+using NodaTime;
 using System.ComponentModel.DataAnnotations;
 
 namespace movtrack8_backend.DTO
@@ -25,7 +26,7 @@ namespace movtrack8_backend.DTO
         public bool? CloudFlareProtected { get; set; }
 
         [RequiredIfFalse(nameof(_IsHttpPatch))]
-        public DateTime LastSuccessfulFetch { get; set; }
+        public Instant LastSuccessfulFetch { get; set; }
 
         public override IActionResult? CheckObject()
         {

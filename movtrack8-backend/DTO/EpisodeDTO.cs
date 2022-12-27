@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NodaTime;
 using System.ComponentModel.DataAnnotations;
 
 namespace movtrack8_backend.DTO
@@ -15,7 +16,7 @@ namespace movtrack8_backend.DTO
         public long? JackettId { get; set; }
 
         [Required]
-        public DateTime? PubDate { get; set; }
+        public Instant? PubDate { get; set; }
 
         [Required]
         public string? Title { get; set; }

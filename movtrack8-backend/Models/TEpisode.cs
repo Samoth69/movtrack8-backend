@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace movtrack8_backend.Models
 {
@@ -14,7 +15,7 @@ namespace movtrack8_backend.Models
 
         public long JackettId { get; set; }
 
-        public DateTime PubDate { get; set; }
+        public Instant PubDate { get; set; }
         public string Title { get; set; }
         public string WebsiteLink { get; set; }
         public string DlLink { get; set; }
