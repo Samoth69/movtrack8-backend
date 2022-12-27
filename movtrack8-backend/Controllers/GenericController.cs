@@ -97,7 +97,7 @@ namespace movtrack8_backend.Controllers
 
             await _db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(_mapper.Map<TDTO>(todoItem));
         }
 
         [HttpDelete("{id}")]
