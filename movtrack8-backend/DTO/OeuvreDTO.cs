@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using movtrack8_backend.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
@@ -6,13 +7,13 @@ namespace movtrack8_backend.DTO
 {
     public class OeuvreDTO : BaseDTO
     {
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public string? Name { get; set; }
 
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public string? OeuvreRegex { get; set; }
 
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public bool? IsDisabled { get; set; }
 
         public override IActionResult? CheckObject()

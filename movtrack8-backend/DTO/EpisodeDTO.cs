@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using movtrack8_backend.Utils;
 using NodaTime;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,28 +7,28 @@ namespace movtrack8_backend.DTO
 {
     public class EpisodeDTO : BaseDTO
     {
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public long? OeuvreId { get; set; }
         
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public long? WebsiteId { get; set; }
 
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public long? JackettId { get; set; }
 
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public Instant? PubDate { get; set; }
 
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public string? Title { get; set; }
 
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public string? WebsiteLink { get; set; }
         
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public string? DlLink { get; set; }
 
-        [Required]
+        [RequiredIfFalse(nameof(_IsHttpPatch))]
         public long? Size { get; set; }
         
         public int Status { get; set; } = 0;
