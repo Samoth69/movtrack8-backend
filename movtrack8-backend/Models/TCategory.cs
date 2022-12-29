@@ -11,5 +11,12 @@ namespace movtrack8_backend.Models
         public string WebsiteSlug { get; set; }
 
         public string Name { get; set; }
+
+        public ICollection<TEpisode> Episodes { get; set; }
+        public List<TEpisodeTCategory> EpisodeCategories { get; set; }
+
+        public string ImagePath { get; set; }
+
+        public bool Show { get; set; } = false;
     }
 }

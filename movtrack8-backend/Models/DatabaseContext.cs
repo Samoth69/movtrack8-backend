@@ -16,8 +16,10 @@ namespace movtrack8_backend.Models
     /// </summary>
     public class DatabaseContext : DbContext
     {
-        public DbSet<TOeuvre> Oeuvres { get; set; }
+        public DbSet<TCategory> Categories { get; set; }
         public DbSet<TEpisode> Episodes { get; set; }
+        public DbSet<TOeuvre> Oeuvres { get; set; }
+        public DbSet<TTag> Tags { get; set; }
         public DbSet<TWebsite> Websites { get; set; }
 
         private readonly IConfiguration _config;
@@ -102,6 +104,11 @@ namespace movtrack8_backend.Models
                 .HasIndex(u => new { u.WebsiteId, u.JackettId })
                 .IsUnique();
 
+            // TCategory: website id & website slug doivent être uniques
+            modelBuilder.Entity<TCategory>()
+                .HasIndex(i => new { i.WebsiteId, i.WebsiteSlug })
+                .IsUnique();
+
             // Many to many entres TEpisode et TTag
             modelBuilder.Entity<TEpisode>()
                 .HasMany(x => x.Tags)
@@ -121,7 +128,25 @@ namespace movtrack8_backend.Models
                         // assure que un episode ne peux pas avoir deux fois le même tag
                         .HasIndex(x => new { x.EpisodeId, x.TagId })
                         .IsUnique()
-                );
+                        );
+
+            // Many to many entres TEpisode et TCategory
+            modelBuilder.Entity<TEpisode>()
+                .HasMany(x => x.Categories)
+                .WithMany(x => x.Episodes)
+                .UsingEntity<TEpisodeTCategory>(
+                    x => x
+                        .HasOne(x => x.Category)
+                        .WithMany(x => x.EpisodeCategories)
+                        .HasForeignKey(x => x.CategoryId)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    x => x
+                        .HasOne(x => x.Episode)
+                        .WithMany(x => x.EpisodeCategories)
+                        .HasForeignKey(x => x.EpisodeId)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        );
+            
         }
     }
 }

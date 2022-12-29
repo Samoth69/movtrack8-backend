@@ -36,5 +36,8 @@ namespace movtrack8_backend.Models
 
         public ICollection<TTag> Tags { get; set; }
         public List<TEpisodeTTag> EpisodeTags { get; set; }
+
+        public ICollection<TCategory> Categories { get; set; }
+        public List<TEpisodeTCategory> EpisodeCategories { get; set; }
     }
 }
