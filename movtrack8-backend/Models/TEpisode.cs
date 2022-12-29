@@ -4,6 +4,8 @@ using NodaTime;
 namespace movtrack8_backend.Models
 {
     [Index(nameof(JackettId))]
+    [Index(nameof(WebsiteId))]
+    [Index(nameof(OeuvreId))]
     [Index(nameof(Title))]
     public class TEpisode : EntityBase
     {
@@ -16,6 +18,7 @@ namespace movtrack8_backend.Models
         public long JackettId { get; set; }
 
         public Instant PubDate { get; set; }
+
         public string Title { get; set; }
         public string WebsiteLink { get; set; }
         public string DlLink { get; set; }
@@ -30,5 +33,8 @@ namespace movtrack8_backend.Models
         public int Status { get; set; } = 0;
 
         public string? Details { get; set; }
+
+        public ICollection<TTag> Tags { get; set; }
+        public List<TEpisodeTTag> EpisodeTags { get; set; }
     }
 }

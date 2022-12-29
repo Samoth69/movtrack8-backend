@@ -61,13 +61,26 @@ namespace movtrack8_backend.Models
                     // saute les entrées qui contiennent le terme regex, on ne veut pas modifier un regex
                     if (x.Name.Contains("regex", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        //return;
+                        return;
                     }
 
                     var val = x.GetGetMethod()?.Invoke(changedEntity.Entity, null);
                     if (val is not null && val is string str)
                     {
-                        object[] arr = { str.Trim() };
+                        string? trimmed = str.Trim();
+                        if (trimmed.Length == 0)
+                        {
+                            // on définit l'entité comme null si le string peut être nullable,
+                            if (StaticUtils.IsNullable(changedEntity.Entity))
+                            {
+                                trimmed = null;
+                            }
+                            else
+                            {
+                                trimmed = string.Empty;
+                            }
+                        }
+                        object?[] arr = { trimmed };
                         x.GetSetMethod()?.Invoke(changedEntity.Entity, arr);
                     }
                 });
@@ -84,11 +97,31 @@ namespace movtrack8_backend.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
-                .Entity<TOeuvre>()
-                .HasMany(e => e.Episodes)
-                .WithOne(e => e.Oeuvre)
-                .OnDelete(DeleteBehavior.Cascade);
+            // WebsiteId & JackettId unique ensemble
+            modelBuilder.Entity<TEpisode>()
+                .HasIndex(u => new { u.WebsiteId, u.JackettId })
+                .IsUnique();
+
+            // Many to many entres TEpisode et TTag
+            modelBuilder.Entity<TEpisode>()
+                .HasMany(x => x.Tags)
+                .WithMany(x => x.Episodes)
+                .UsingEntity<TEpisodeTTag>(
+                    x => x
+                        .HasOne(x => x.Tag)
+                        .WithMany(x => x.EpisodeTags)
+                        .HasForeignKey(x => x.TagId)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    x => x
+                        .HasOne(x => x.Episode)
+                        .WithMany(x => x.EpisodeTags)
+                        .HasForeignKey(x => x.EpisodeId)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    x => x
+                        // assure que un episode ne peux pas avoir deux fois le même tag
+                        .HasIndex(x => new { x.EpisodeId, x.TagId })
+                        .IsUnique()
+                );
         }
     }
 }

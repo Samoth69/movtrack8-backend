@@ -9,5 +9,20 @@
                 action(item);
             }
         }
+
+        /// <summary>
+        /// https://stackoverflow.com/a/374663
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool IsNullable<T>(T obj)
+        {
+            if (obj == null) return true; // obvious
+            Type type = typeof(T);
+            if (!type.IsValueType) return true; // ref-type
+            if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
+            return false; // value-type
+        }
     }
 }

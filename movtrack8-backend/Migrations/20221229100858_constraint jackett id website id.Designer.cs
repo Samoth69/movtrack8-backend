@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using movtrack8_backend.Models;
 namespace movtrack8backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20221229100858_constraint jackett id website id")]
+    partial class constraintjackettidwebsiteid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,40 +93,6 @@ namespace movtrack8backend.Migrations
                     b.ToTable("Episodes");
                 });
 
-            modelBuilder.Entity("movtrack8_backend.Models.TEpisodeTTag", b =>
-                {
-                    b.Property<long?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long?>("Id"));
-
-                    b.Property<Instant?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("EpisodeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TagId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Instant?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("TagId");
-
-                    b.HasIndex("UpdatedAt");
-
-                    b.HasIndex("EpisodeId", "TagId")
-                        .IsUnique();
-
-                    b.ToTable("TEpisodeTTag");
-                });
-
             modelBuilder.Entity("movtrack8_backend.Models.TOeuvre", b =>
                 {
                     b.Property<long?>("Id")
@@ -156,46 +125,6 @@ namespace movtrack8backend.Migrations
                     b.HasIndex("UpdatedAt");
 
                     b.ToTable("Oeuvres");
-                });
-
-            modelBuilder.Entity("movtrack8_backend.Models.TTag", b =>
-                {
-                    b.Property<long?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long?>("Id"));
-
-                    b.Property<string>("BackgroundColor")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Instant?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ForegroundColor")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<string>("Regex")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Instant?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("UpdatedAt");
-
-                    b.ToTable("TTag");
                 });
 
             modelBuilder.Entity("movtrack8_backend.Models.TWebsite", b =>
@@ -264,38 +193,9 @@ namespace movtrack8backend.Migrations
                     b.Navigation("Website");
                 });
 
-            modelBuilder.Entity("movtrack8_backend.Models.TEpisodeTTag", b =>
-                {
-                    b.HasOne("movtrack8_backend.Models.TEpisode", "Episode")
-                        .WithMany("EpisodeTags")
-                        .HasForeignKey("EpisodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("movtrack8_backend.Models.TTag", "Tag")
-                        .WithMany("EpisodeTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Episode");
-
-                    b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("movtrack8_backend.Models.TEpisode", b =>
-                {
-                    b.Navigation("EpisodeTags");
-                });
-
             modelBuilder.Entity("movtrack8_backend.Models.TOeuvre", b =>
                 {
                     b.Navigation("Episodes");
-                });
-
-            modelBuilder.Entity("movtrack8_backend.Models.TTag", b =>
-                {
-                    b.Navigation("EpisodeTags");
                 });
 
             modelBuilder.Entity("movtrack8_backend.Models.TWebsite", b =>
